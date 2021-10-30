@@ -1,0 +1,8 @@
+project(magnumTestTests VERSION 0.1.0)
+
+add_executable(magnumTestTests src/Tests.cpp)
+
+target_link_libraries(magnumTestTests Catch2::Catch2)
+
+# add_test(NAME MyLibTests COMMAND MyLibTests) -- this gets deleted
+# catch_discover_tests(Tests)
