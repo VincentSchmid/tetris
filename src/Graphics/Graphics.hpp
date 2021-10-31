@@ -34,6 +34,7 @@ class Graphics
         void drawMap();
         void drawBorder();
         void drawNextShape();
+        void drawBox(Coord position, Color3 color);
 
         void drawShape(Shape *shape, Coord position, Color3 color);
         
@@ -84,8 +85,8 @@ Graphics::Graphics(Map<10, 24> *currentMap, Game *game, Vector2i windowSize)
 
     projection =
         Matrix4::perspectiveProjection(
-            35.0_degf, Vector2{windowSize}.aspectRatio(), 0.01f, 100.0f)*
-        Matrix4::translation({-5.0f, -12.0f, -70.0f});
+            35.0_degf, Vector2{windowSize}.aspectRatio(), 0.01f, 150.0f)*
+        Matrix4::translation({-5.0f, -22.0f, -130.0f});
 
 }
 
@@ -106,17 +107,11 @@ void Graphics::drawMap()
     {
         for (int x = 0; x < currentMap->width; x++)
         {
-            Coord mapCoords {x, currentMap->height - y - 1};
+            Coord mapCoords {x, y};
 
             if (currentMap->map[coordsToIndex<10>(mapCoords)] == 1)
             {
-                shader.setLightPositions({lightPosition})
-                .setDiffuseColor(mapShapes)
-                .setAmbientColor(Color3::fromHsv({mapShapes.hue(), 1.0f, 0.3f}))
-                .setTransformationMatrix(Matrix4::translation({(Float) mapCoords.x * 2.1f, (Float) (currentMap->height - mapCoords.y - 1) * 2.1f, 0.0f}))
-                .setNormalMatrix(transformation.normalMatrix())
-                .setProjectionMatrix(projection)
-                .draw(mesh);
+                drawBox({mapCoords.x, currentMap->height - mapCoords.y - 1}, mapShapes);
             }
         }
     }
@@ -124,7 +119,17 @@ void Graphics::drawMap()
 
 void Graphics::drawBorder()
 {
-    
+    for (int y = -1; y < currentMap->height + 1; y++)
+    {
+        drawBox({-1, y}, mapShapes);
+        drawBox({currentMap->width, y}, mapShapes);
+    }
+
+    for (int x = -1; x < currentMap->width + 1; x++)
+    {
+        drawBox({x, -1}, mapShapes);
+        drawBox({x, currentMap->height}, mapShapes);
+    }
 }
 
 void Graphics::drawActiveShape()
@@ -134,7 +139,7 @@ void Graphics::drawActiveShape()
 
 void Graphics::drawNextShape()
 {
-    drawShape(&game->nextShape, {-4, 12}, activeShape);
+    drawShape(&game->nextShape, {-5, 12}, activeShape);
 }
 
 void Graphics::drawShape(Shape *shape, Coord position, Color3 color)
@@ -147,16 +152,21 @@ void Graphics::drawShape(Shape *shape, Coord position, Color3 color)
 
             if (shape->shape[coordsToIndex<4>({x, y})] == 1)
             {
-                shader.setLightPositions({lightPosition})
-                .setDiffuseColor(color)
-                .setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.3f}))
-                .setTransformationMatrix(Matrix4::translation({(Float) currPos.x * 2.1f, (Float) currPos.y * 2.1f, 0.0f}))
-                .setNormalMatrix(transformation.normalMatrix())
-                .setProjectionMatrix(projection)
-                .draw(mesh);
+                drawBox(currPos, color);
             }
         }
     }
+}
+
+void Graphics::drawBox(Coord position, Color3 color)
+{
+    shader.setLightPositions({lightPosition})
+        .setDiffuseColor(color)
+        .setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.3f}))
+        .setTransformationMatrix(Matrix4::translation({(Float) position.x * 2.1f, (Float) position.y * 2.1f, 0.0f}))
+        .setNormalMatrix(transformation.normalMatrix())
+        .setProjectionMatrix(projection)
+        .draw(mesh);
 }
 
 #endif
