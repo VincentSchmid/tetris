@@ -15,7 +15,6 @@
 
 #include "Logic/Map.hpp"
 #include "Logic/Game.hpp"
-#include "Input/Actions.hpp"
 #include "Graphics/Graphics.hpp"
 
 #define WIDTH 10
@@ -33,7 +32,6 @@ class PrimitivesExample: public Platform::Application
         Map<WIDTH, HEIGHT> stack;
         Game game;
         Graphics graphics;
-        Actions actions;
         float counter;
 
     public:
@@ -51,7 +49,6 @@ PrimitivesExample::PrimitivesExample(const Arguments& arguments):
     , stack(Map<WIDTH, HEIGHT>())
     , game(Game(&stack))
     , graphics(Graphics(&stack, &game, windowSize()))
-    , actions(Actions(&game))
 {
     counter = 0;
     timeline.start();
