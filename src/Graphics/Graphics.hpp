@@ -83,7 +83,6 @@ void Graphics::draw()
     GL::defaultFramebuffer.clear(
         GL::FramebufferClear::Color|GL::FramebufferClear::Depth);
 
-    
     Coord activeShapePos = {game->activeShape.position.x, game->activeShape.position.y};
 
     for (int y = 0; y < 4; y++)

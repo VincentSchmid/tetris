@@ -17,7 +17,6 @@ enum GameState
     GAME_OVER
 };
 
-
 class Game
 {
     public:
@@ -72,7 +71,6 @@ void Game::update()
         stack->shiftDown(clearedLine);
         clearedLine = stack->checkLines();
     }
-    
 }
 
 #endif

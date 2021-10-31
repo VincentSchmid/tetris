@@ -30,7 +30,6 @@ class Map
         Coord indexToMapPos(int index);
 };
 
-
 template<int W, int H>
 bool Map<W, H>::checkCollision(Shape *shape)
 {
@@ -143,7 +142,6 @@ Coord Map<W, H>::indexToMapPos(int index)
 {
     return coordsToMapPos(indexToCoords<W>(index));
 }
-
 
 template<int W, int H>
 bool Map<W, H>::isOnMap(Coord coords)
