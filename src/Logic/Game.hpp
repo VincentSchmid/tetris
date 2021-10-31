@@ -23,7 +23,8 @@ class Game
         Game(Map<WIDTH, HEIGHT> *map)
         : stack(map)
         , shapeFactory(ShapeFactory())
-        , activeShape(shapeFactory.getShape(false))
+        , nextShape(shapeFactory.getShape(false))
+        , activeShape(nextShape)
         {
             currentState = GameState::PLACED;
             score = 0;
@@ -31,6 +32,7 @@ class Game
 
         GameState currentState;
         ShapeFactory shapeFactory;
+        Shape nextShape;
         Shape activeShape;
         Map<WIDTH, HEIGHT> *stack;
         int score;
@@ -39,6 +41,7 @@ class Game
 
     public:
         void update();
+        void hardDrop();
 
     private:
 
@@ -48,7 +51,8 @@ void Game::update()
 {
     if (currentState == GameState::PLACED)
     {
-        activeShape = shapeFactory.getShape(true);
+        activeShape = nextShape;
+        nextShape = shapeFactory.getShape(true);
         std::pair<int, int> shapeBounds = activeShape.getBoundingWidth();
         activeShape.position = {getSpawnXPos(shapeBounds.first, shapeBounds.second, WIDTH), HEIGHT - 1};
         currentState = GameState::IS_PLACING;
@@ -71,6 +75,16 @@ void Game::update()
         stack->shiftDown(clearedLine);
         clearedLine = stack->checkLines();
     }
+}
+
+void Game::hardDrop()
+{
+    while(!stack->checkCollision(&activeShape))
+    {
+        activeShape.moveDown();
+    }
+
+    activeShape.undoLastMovement();
 }
 
 #endif

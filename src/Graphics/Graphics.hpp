@@ -28,11 +28,20 @@ class Graphics
     public:
         Graphics(Map<10, 24> *currentMap, Game *game, Vector2i windowSize);
         void draw();
+
+    private:
+        void drawActiveShape();
+        void drawMap();
+        void drawBorder();
+        void drawNextShape();
+
+        void drawShape(Shape *shape, Coord position, Color3 color);
         
     private:
         Game *game;
         Map<10, 24> *currentMap;
         Vector2i windowSize;
+        Vector3 lightPosition;
 
         GL::Mesh mesh;
         Shaders::Phong shader;
@@ -69,6 +78,8 @@ Graphics::Graphics(Map<10, 24> *currentMap, Game *game, Vector2i windowSize)
     activeShape = Color3::fromHsv({35.0_degf, 1.0f, 1.0f});
     mapShapes = Color3::fromHsv({15.0_degf, 1.0f, 1.0f});
 
+    lightPosition = {1.4f, 1.0f, 2.0f};
+
     transformation = Matrix4::scaling({.1f, .1f, .1f}) * Matrix4::rotationX(30.0_degf)*Matrix4::rotationY(40.0_degf);
 
     projection =
@@ -83,27 +94,14 @@ void Graphics::draw()
     GL::defaultFramebuffer.clear(
         GL::FramebufferClear::Color|GL::FramebufferClear::Depth);
 
-    Coord activeShapePos = {game->activeShape.position.x, game->activeShape.position.y};
+    drawNextShape();
+    drawActiveShape();
+    drawMap();
+    drawBorder();
+}
 
-    for (int y = 0; y < 4; y++)
-    {
-        for (int x = 0; x < 4; x++)
-        {
-            Coord currPos {activeShapePos.x + x, activeShapePos.y - y};
-
-            if (game->activeShape.shape[coordsToIndex<4>({x, y})] == 1)
-            {
-                shader.setLightPositions({{1.4f, 1.0f, 0.75f}})
-                .setDiffuseColor(activeShape)
-                .setAmbientColor(Color3::fromHsv({activeShape.hue(), 1.0f, 0.3f}))
-                .setTransformationMatrix(Matrix4::translation({(Float) currPos.x * 2, (Float) currPos.y * 2, 0.0f}))
-                .setNormalMatrix(transformation.normalMatrix())
-                .setProjectionMatrix(projection)
-                .draw(mesh);
-            }
-        }
-    }
-
+void Graphics::drawMap()
+{
     for (int y = 0; y < currentMap->height; y++)
     {
         for (int x = 0; x < currentMap->width; x++)
@@ -112,10 +110,47 @@ void Graphics::draw()
 
             if (currentMap->map[coordsToIndex<10>(mapCoords)] == 1)
             {
-                shader.setLightPositions({{1.4f, 1.0f, 0.75f}})
+                shader.setLightPositions({lightPosition})
                 .setDiffuseColor(mapShapes)
                 .setAmbientColor(Color3::fromHsv({mapShapes.hue(), 1.0f, 0.3f}))
-                .setTransformationMatrix(Matrix4::translation({(Float) mapCoords.x * 2, (Float) (currentMap->height - mapCoords.y - 1) * 2, 0.0f}))
+                .setTransformationMatrix(Matrix4::translation({(Float) mapCoords.x * 2.1f, (Float) (currentMap->height - mapCoords.y - 1) * 2.1f, 0.0f}))
+                .setNormalMatrix(transformation.normalMatrix())
+                .setProjectionMatrix(projection)
+                .draw(mesh);
+            }
+        }
+    }
+}
+
+void Graphics::drawBorder()
+{
+    
+}
+
+void Graphics::drawActiveShape()
+{
+    drawShape(&game->activeShape, game->activeShape.position, activeShape);
+}
+
+void Graphics::drawNextShape()
+{
+    drawShape(&game->nextShape, {-4, 12}, activeShape);
+}
+
+void Graphics::drawShape(Shape *shape, Coord position, Color3 color)
+{
+    for (int y = 0; y < 4; y++)
+    {
+        for (int x = 0; x < 4; x++)
+        {
+            Coord currPos {position.x + x, position.y - y};
+
+            if (shape->shape[coordsToIndex<4>({x, y})] == 1)
+            {
+                shader.setLightPositions({lightPosition})
+                .setDiffuseColor(color)
+                .setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.3f}))
+                .setTransformationMatrix(Matrix4::translation({(Float) currPos.x * 2.1f, (Float) currPos.y * 2.1f, 0.0f}))
                 .setNormalMatrix(transformation.normalMatrix())
                 .setProjectionMatrix(projection)
                 .draw(mesh);

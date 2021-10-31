@@ -1,15 +1,3 @@
-#include <Magnum/GL/Buffer.h>
-#include <Magnum/GL/DefaultFramebuffer.h>
-#include <Magnum/GL/Mesh.h>
-#include <Magnum/GL/Renderer.h>
-#include <Magnum/Math/Color.h>
-#include <Magnum/Math/Matrix4.h>
-#include <Magnum/MeshTools/Interleave.h>
-#include <Magnum/MeshTools/CompressIndices.h>
-#include <Magnum/Platform/Sdl2Application.h>
-#include <Magnum/Primitives/Cube.h>
-#include <Magnum/Shaders/Phong.h>
-#include <Magnum/Trade/MeshData.h>
 #include <Magnum/Magnum.h>
 #include <Magnum/Timeline.h>
 
@@ -91,6 +79,10 @@ void PrimitivesExample::keyPressEvent(KeyEvent& event)
         game.activeShape.rotate();
     }
 
+    else if(event.key() == KeyEvent::Key::S)
+    {
+        game.hardDrop();
+    }
     
     if(stack.checkCollision(&game.activeShape))
     {
