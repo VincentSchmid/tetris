@@ -1,3 +1,3 @@
 # tetris
-tetris using magnum
+tetris using magnum  
 ![screen of gameplay](screens/screen_play2.png)
