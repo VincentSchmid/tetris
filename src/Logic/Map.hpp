@@ -19,7 +19,7 @@ class Map
             map.fill({});
         };
 
-        bool checkCollision(Shape shape);
+        bool checkCollision(Shape *shape);
         int checkLines();
         void addBlock(Shape shape);
         Coord coordsToMapPos(Coord coord);
@@ -32,16 +32,16 @@ class Map
 
 
 template<int W, int H>
-bool Map<W, H>::checkCollision(Shape shape)
+bool Map<W, H>::checkCollision(Shape *shape)
 {
-    for (int8_t i = 0; i < shape.shape.size(); i++)
+    for (int8_t i = 0; i < shape->shape.size(); i++)
     {
         Coord relativePos = indexToCoords<4>(i);
-        Coord posOnMap = {shape.position.x + relativePos.x, shape.position.y - relativePos.y};
+        Coord posOnMap = {shape->position.x + relativePos.x, shape->position.y - relativePos.y};
         posOnMap = coordsToMapPos(posOnMap);
 
         // check if shape is there
-        if (shape.shape[i] == 1)
+        if (shape->shape[i] == 1)
         {
             //check if is inside map
             if (!isOnMap(posOnMap))

@@ -13,6 +13,7 @@ enum ShapeType
     Z,
     T,
     L,
+    SQUARE,
     L_INV,
     LINE
 };

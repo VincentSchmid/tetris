@@ -279,7 +279,7 @@ SCENARIO("Adding blocks moving and colliding, [MAP]")
 
             THEN("shape should not collide with map")
             {
-                REQUIRE_FALSE(myMap.checkCollision(myShape));
+                REQUIRE_FALSE(myMap.checkCollision(&myShape));
             }
         }
 
@@ -295,7 +295,7 @@ SCENARIO("Adding blocks moving and colliding, [MAP]")
 
             THEN("shape collides")
             {
-                REQUIRE(myMap.checkCollision(myShape));
+                REQUIRE(myMap.checkCollision(&myShape));
             }
         }
 
@@ -313,7 +313,7 @@ SCENARIO("Adding blocks moving and colliding, [MAP]")
 
             THEN("shape collides")
             {
-                REQUIRE(myMap.checkCollision(myShape));
+                REQUIRE(myMap.checkCollision(&myShape));
             }
         }
     }

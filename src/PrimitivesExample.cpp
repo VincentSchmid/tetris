@@ -33,12 +33,14 @@ class PrimitivesExample: public Platform::Application
         Game game;
         Graphics graphics;
         float counter;
+        float tickRate;
 
     public:
         explicit PrimitivesExample(const Arguments& arguments);
 
     private:
         void drawEvent() override;
+        void keyPressEvent(KeyEvent& event) override;
 
         Timeline timeline;
 };
@@ -51,6 +53,7 @@ PrimitivesExample::PrimitivesExample(const Arguments& arguments):
     , graphics(Graphics(&stack, &game, windowSize()))
 {
     counter = 0;
+    tickRate = 0.5f;
     timeline.start();
 }
 
@@ -58,7 +61,7 @@ void PrimitivesExample::drawEvent()
 {
     counter += timeline.previousFrameDuration();
 
-    if (counter >= 0.2f)
+    if (counter >= tickRate)
     {
         counter = 0;
         game.update();
@@ -71,5 +74,30 @@ void PrimitivesExample::drawEvent()
     timeline.nextFrame();
 }
 
+void PrimitivesExample::keyPressEvent(KeyEvent& event)
+{
+    if(event.key() == KeyEvent::Key::A)
+    {
+        game.activeShape.moveLeft();
+    }
+
+    else if(event.key() == KeyEvent::Key::D)
+    {
+        game.activeShape.moveRight();
+    }
+
+    else if(event.key() == KeyEvent::Key::W)
+    {
+        game.activeShape.rotate();
+    }
+
+    
+    if(stack.checkCollision(&game.activeShape))
+    {
+        game.activeShape.undoLastMovement();
+    }
+
+    redraw();
+}
 
 MAGNUM_APPLICATION_MAIN(PrimitivesExample)

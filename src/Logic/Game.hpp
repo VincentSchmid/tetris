@@ -57,7 +57,7 @@ void Game::update()
 
     activeShape.moveDown();
 
-    if (stack->checkCollision(activeShape))
+    if (stack->checkCollision(&activeShape))
     {
         activeShape.undoLastMovement();
         stack->addBlock(activeShape);
