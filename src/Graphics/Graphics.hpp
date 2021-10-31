@@ -49,6 +49,7 @@ class Graphics
         Matrix4 transformation, projection;
         Color3 activeShape;
         Color3 mapShapes;
+        Color3 mapBorder;
 };
 
 Graphics::Graphics(Map<10, 24> *currentMap, Game *game, Vector2i windowSize) 
@@ -78,6 +79,7 @@ Graphics::Graphics(Map<10, 24> *currentMap, Game *game, Vector2i windowSize)
 
     activeShape = Color3::fromHsv({35.0_degf, 1.0f, 1.0f});
     mapShapes = Color3::fromHsv({15.0_degf, 1.0f, 1.0f});
+    mapBorder = Color3::fromHsv({100.0_degf, 1.0f, 1.0f});
 
     lightPosition = {1.4f, 1.0f, 2.0f};
 
@@ -87,7 +89,6 @@ Graphics::Graphics(Map<10, 24> *currentMap, Game *game, Vector2i windowSize)
         Matrix4::perspectiveProjection(
             35.0_degf, Vector2{windowSize}.aspectRatio(), 0.01f, 150.0f)*
         Matrix4::translation({-5.0f, -22.0f, -130.0f});
-
 }
 
 void Graphics::draw()
@@ -121,14 +122,14 @@ void Graphics::drawBorder()
 {
     for (int y = -1; y < currentMap->height + 1; y++)
     {
-        drawBox({-1, y}, mapShapes);
-        drawBox({currentMap->width, y}, mapShapes);
+        drawBox({-1, y}, mapBorder);
+        drawBox({currentMap->width, y}, mapBorder);
     }
 
     for (int x = -1; x < currentMap->width + 1; x++)
     {
-        drawBox({x, -1}, mapShapes);
-        drawBox({x, currentMap->height}, mapShapes);
+        drawBox({x, -1}, mapBorder);
+        drawBox({x, currentMap->height}, mapBorder);
     }
 }
 
