@@ -20,16 +20,6 @@ enum GameState
 class Game
 {
     public:
-        Game(Map<WIDTH, HEIGHT> *map)
-        : stack(map)
-        , shapeFactory(ShapeFactory())
-        , nextShape(shapeFactory.getShape(false))
-        , activeShape(nextShape)
-        {
-            currentState = GameState::PLACED;
-            score = 0;
-        };
-
         GameState currentState;
         ShapeFactory shapeFactory;
         Shape nextShape;
@@ -40,6 +30,16 @@ class Game
     private:
 
     public:
+        Game(Map<WIDTH, HEIGHT> *map)
+        : stack(map)
+        , shapeFactory(ShapeFactory())
+        , nextShape(shapeFactory.getShape(false))
+        , activeShape(nextShape)
+        {
+            currentState = GameState::PLACED;
+            score = 0;
+        };
+    
         void update();
         void hardDrop();
 
