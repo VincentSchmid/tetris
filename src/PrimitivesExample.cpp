@@ -14,23 +14,21 @@ using namespace Math::Literals;
 
 class PrimitivesExample: public Platform::Application
 {
-    public:
-
     private:
         Map<WIDTH, HEIGHT> stack;
         Game game;
         Graphics graphics;
         float counter;
         float tickRate;
+        Timeline timeline;
 
     public:
         explicit PrimitivesExample(const Arguments& arguments);
 
     private:
+        void startNewGame();
         void drawEvent() override;
         void keyPressEvent(KeyEvent& event) override;
-
-        Timeline timeline;
 };
 
 PrimitivesExample::PrimitivesExample(const Arguments& arguments):
@@ -45,6 +43,13 @@ PrimitivesExample::PrimitivesExample(const Arguments& arguments):
     timeline.start();
 }
 
+void PrimitivesExample::startNewGame()
+{
+    stack = Map<WIDTH, HEIGHT>();
+    game = Game(&stack);
+    graphics = Graphics(&stack, &game, windowSize());
+}
+
 void PrimitivesExample::drawEvent()
 {
     counter += timeline.previousFrameDuration();
@@ -57,7 +62,7 @@ void PrimitivesExample::drawEvent()
 
     if (game.currentState == GameState::GAME_OVER)
     {
-        game.gameOver();
+        startNewGame();
     }
 
     graphics.draw();
