@@ -55,6 +55,11 @@ void PrimitivesExample::drawEvent()
         game.update();
     }
 
+    if (game.currentState == GameState::GAME_OVER)
+    {
+        game.gameOver();
+    }
+
     graphics.draw();
 
     swapBuffers();

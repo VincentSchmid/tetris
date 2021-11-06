@@ -61,7 +61,8 @@ void Game::update()
         // collision on place means game over!
         if (stack->checkCollision(&activeShape))
         {
-            gameOver();
+            currentState = GameState::GAME_OVER;
+            return;
         }
     }
 
