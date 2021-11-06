@@ -42,6 +42,7 @@ class Game
     
         void update();
         void hardDrop();
+        void gameOver();
 
     private:
 
@@ -56,6 +57,12 @@ void Game::update()
         std::pair<int, int> shapeBounds = activeShape.getBoundingWidth();
         activeShape.position = {getSpawnXPos(shapeBounds.first, shapeBounds.second, WIDTH), HEIGHT - 1};
         currentState = GameState::IS_PLACING;
+
+        // collision on place means game over!
+        if (stack->checkCollision(&activeShape))
+        {
+            gameOver();
+        }
     }
 
     activeShape.moveDown();
@@ -85,6 +92,11 @@ void Game::hardDrop()
     }
 
     activeShape.undoLastMovement();
+}
+
+void Game::gameOver()
+{
+    stack->clearMap();
 }
 
 #endif

@@ -24,6 +24,7 @@ class Map
         void addBlock(Shape shape);
         Coord coordsToMapPos(Coord coord);
         void shiftDown(int row);
+        void clearMap();
 
     private:
         bool isOnMap(Coord coords);
@@ -73,6 +74,12 @@ void Map<W, H>::addBlock(Shape shape)
             map[coordsToIndex<W>(posOnMap)] = 1;
         }
     }
+}
+
+template<int W, int H>
+void Map<W, H>::clearMap()
+{
+    map.fill({});
 }
 
 template<int W, int H>
