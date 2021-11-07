@@ -21,6 +21,7 @@ find_package(Magnum CONFIG REQUIRED
 )
 
 find_package(Catch2 CONFIG REQUIRED)
+find_package(MagnumExtras REQUIRED Ui)
 
 set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
@@ -35,6 +36,8 @@ target_link_libraries(magnumTest
     Magnum::MeshTools
     Magnum::Primitives
 )
+
+target_link_libraries(magnumTest MagnumExtras::Ui)
 
 include(CTest)
 include(Catch)
