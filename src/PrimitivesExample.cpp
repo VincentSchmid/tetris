@@ -1,12 +1,12 @@
 #include <Magnum/Magnum.h>
 #include <Magnum/Timeline.h>
 
+#include <memory>
+
+#include "params.hpp"
 #include "Logic/Map.hpp"
 #include "Logic/Game.hpp"
 #include "Graphics/Graphics.hpp"
-
-#define WIDTH 10
-#define HEIGHT 24
 
 using namespace Magnum;
 using namespace Math::Literals;
@@ -15,8 +15,8 @@ using namespace Math::Literals;
 class PrimitivesExample: public Platform::Application
 {
     private:
-        Map<WIDTH, HEIGHT> stack;
-        Game game;
+        std::unique_ptr<Map<WIDTH, HEIGHT>> stack;
+        std::unique_ptr<Game> game;
         Graphics graphics;
         float counter;
         float tickRate;
@@ -34,9 +34,9 @@ class PrimitivesExample: public Platform::Application
 PrimitivesExample::PrimitivesExample(const Arguments& arguments):
     Platform::Application{arguments, Configuration{}
         .setTitle("Magnum Primitives Example")}
-    , stack(Map<WIDTH, HEIGHT>())
-    , game(Game(&stack))
-    , graphics(Graphics(&stack, &game, windowSize()))
+    , stack(new Map<WIDTH, HEIGHT>())
+    , game(new Game(stack))
+    , graphics(Graphics(stack, game, windowSize()))
 {
     counter = 0;
     tickRate = 0.5f;
@@ -45,9 +45,8 @@ PrimitivesExample::PrimitivesExample(const Arguments& arguments):
 
 void PrimitivesExample::startNewGame()
 {
-    stack = Map<WIDTH, HEIGHT>();
-    game = Game(&stack);
-    graphics = Graphics(&stack, &game, windowSize());
+    stack.reset(new Map<WIDTH, HEIGHT>());
+    game.reset(new Game(stack));
 }
 
 void PrimitivesExample::drawEvent()
@@ -57,10 +56,10 @@ void PrimitivesExample::drawEvent()
     if (counter >= tickRate)
     {
         counter = 0;
-        game.update();
+        game->update();
     }
 
-    if (game.currentState == GameState::GAME_OVER)
+    if (game->currentState == GameState::GAME_OVER)
     {
         startNewGame();
     }
@@ -76,27 +75,27 @@ void PrimitivesExample::keyPressEvent(KeyEvent& event)
 {
     if(event.key() == KeyEvent::Key::A)
     {
-        game.activeShape.moveLeft();
+        game->activeShape.moveLeft();
     }
 
     else if(event.key() == KeyEvent::Key::D)
     {
-        game.activeShape.moveRight();
+        game->activeShape.moveRight();
     }
 
     else if(event.key() == KeyEvent::Key::W)
     {
-        game.activeShape.rotate();
+        game->activeShape.rotate();
     }
 
     else if(event.key() == KeyEvent::Key::S)
     {
-        game.hardDrop();
+        game->hardDrop();
     }
     
-    if(stack.checkCollision(&game.activeShape))
+    if(stack->checkCollision(&(game->activeShape)))
     {
-        game.activeShape.undoLastMovement();
+        game->activeShape.undoLastMovement();
     }
 
     redraw();

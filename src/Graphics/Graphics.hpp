@@ -1,6 +1,8 @@
 #ifndef Graphics_h
 #define Graphics_h
 
+#include <memory>
+
 #include <Magnum/GL/Buffer.h>
 #include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/GL/Mesh.h>
@@ -15,6 +17,7 @@
 #include <Magnum/Trade/MeshData.h>
 #include <Magnum/Magnum.h>
 
+#include "params.hpp"
 #include "Logic/Map.hpp"
 #include "Logic/Game.hpp"
 #include "helpers.hpp"
@@ -26,7 +29,7 @@ using namespace Math::Literals;
 class Graphics
 {
     public:
-        Graphics(Map<10, 24> *currentMap, Game *game, Vector2i windowSize);
+        Graphics(std::unique_ptr<Map<WIDTH, HEIGHT>> &currentMap, std::unique_ptr<Game> &game, Vector2i windowSize);
         void draw();
 
     private:
@@ -39,8 +42,8 @@ class Graphics
         void drawShape(Shape *shape, Coord position, Color3 color);
         
     private:
-        Game *game;
-        Map<10, 24> *currentMap;
+        std::unique_ptr<Game> &game;
+        std::unique_ptr<Map<WIDTH, HEIGHT>> &currentMap;
         Vector2i windowSize;
         Vector3 lightPosition;
 
@@ -52,7 +55,7 @@ class Graphics
         Color3 mapBorder;
 };
 
-Graphics::Graphics(Map<10, 24> *currentMap, Game *game, Vector2i windowSize) 
+Graphics::Graphics(std::unique_ptr<Map<WIDTH, HEIGHT>> &currentMap, std::unique_ptr<Game> &game, Vector2i windowSize) 
 : currentMap(currentMap)
 , game(game)
 , windowSize(windowSize)
@@ -110,7 +113,7 @@ void Graphics::drawMap()
         {
             Coord mapCoords {x, y};
 
-            if (currentMap->map[coordsToIndex<10>(mapCoords)] == 1)
+            if (currentMap->map[coordsToIndex<WIDTH>(mapCoords)] == 1)
             {
                 drawBox({mapCoords.x, currentMap->height - mapCoords.y - 1}, mapShapes);
             }

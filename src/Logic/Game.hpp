@@ -1,13 +1,13 @@
 #ifndef GameState_h
 #define GameState_h
 
+#include <memory>
+
+#include "params.hpp"
 #include "Map.hpp"
 #include "helpers.hpp"
 #include "Shapes/Shape.hpp"
 #include "Shapes/ShapeFactory.hpp"
-
-#define WIDTH 10
-#define HEIGHT 24
 
 
 enum GameState
@@ -24,13 +24,13 @@ class Game
         ShapeFactory shapeFactory;
         Shape nextShape;
         Shape activeShape;
-        Map<WIDTH, HEIGHT> *stack;
+        std::unique_ptr<Map<WIDTH, HEIGHT>> &stack;
         int score;
 
     private:
 
     public:
-        Game(Map<WIDTH, HEIGHT> *map)
+        Game(std::unique_ptr<Map<WIDTH, HEIGHT>> &map)
         : stack(map)
         , shapeFactory(ShapeFactory())
         , nextShape(shapeFactory.getShape(false))
